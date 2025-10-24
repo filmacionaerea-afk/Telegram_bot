@@ -1,0 +1,15 @@
+{
+  "name": "@apps/collector",
+  "version": "1.0.0",
+  "main": "src/main.ts",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@packages/config": "*",
+    "@packages/db": "*",
+    "@packages/types": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}

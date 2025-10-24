@@ -2,6 +2,7 @@
   "name": "@apps/bot",
   "version": "1.0.0",
   "main": "src/main.ts",
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "telegraf": "^4.16.3"

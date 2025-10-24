@@ -1,7 +1,12 @@
 {
   "name": "@packages/db",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "dist/src/index.js",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./src/PostRepository.js": "./dist/src/PostRepository.js"
+  },
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^9.0.0"

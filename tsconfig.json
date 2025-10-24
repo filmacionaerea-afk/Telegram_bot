@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "node16",
     "lib": ["ES2022"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
@@ -16,6 +16,10 @@
       "@apps/*": ["apps/*"]
     }
   },
-  "include": ["packages/**/*.ts", "apps/**/*.ts"],
-  "exclude": ["node_modules"]
-}
+  "references": [
+    { "path": "./packages/config" },
+    { "path": "./packages/db" },
+    { "path": "./packages/types" },
+    { "path": "./apps/bot" },
+    { "path": "./apps/collector" }
+  ]

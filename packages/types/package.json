@@ -1,5 +1,5 @@
 {
-  "name": "@packages/config",
+  "name": "@packages/types",
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "exports": {

@@ -122,6 +122,7 @@ El tono de comunicación del bot será **accesible y atractivo, con un detalle m
 **Expanded Goal:** Implementar el servicio de recolección de datos completamente funcional, que se conectará a la API de datos, obtendrá las publicaciones y las persistirá en la base de datos SQLite.
 
 #### Story 2.1: Pre-carga de la Lista de Influencers
+* **Status:** Completed
 * **As a** system, **I need** to have an initial list of influencers in the database, **so that** the collection service knows which sources to pull data from.
 * **Acceptance Criteria:**
     1.  A seeding script is created to read a predefined list of influencers.
@@ -129,6 +130,7 @@ El tono de comunicación del bot será **accesible y atractivo, con un detalle m
     3.  The script prevents duplicate entries.
 
 #### Story 2.2: Implementación del Servicio de Recolección de Datos
+* **Status:** Completed
 * **As a** developer, **I want** a new `collector` service within the monorepo, **so that** I can house all logic related to data extraction and storage.
 * **Acceptance Criteria:**
     1.  A new `collector` application is created within the `apps/` directory.
@@ -136,6 +138,7 @@ El tono de comunicación del bot será **accesible y atractivo, con un detalle m
     3.  A main file (`index.ts`) is created as the entry point.
 
 #### Story 2.3: Extracción de Publicaciones para un Influencer
+* **Status:** Completed
 * **As a** collector service, **I want** to fetch the latest posts for a specific influencer via the data API, **so that** I can process and store the relevant information.
 * **Acceptance Criteria:**
     1.  A function is created that queries the database for an influencer's profile.
