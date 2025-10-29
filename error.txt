@@ -8,5 +8,5 @@
 	"startColumn": 25,
 	"endLineNumber": 10,
 	"endColumn": 31,
-	"origin": "extHost1"
+	"origin": "extHost1" 
 }]
