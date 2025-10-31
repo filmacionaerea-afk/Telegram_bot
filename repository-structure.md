@@ -59,4 +59,7 @@
 | [utils](#dtelegram_news_botbmad-coreutils) | 29/10/2025 08:47 | |
 | [workflows](#dtelegram_news_botbmad-coreworkflows) | 29/10/2025 08:47 | |
 | core-config.yaml | 29/10/2025 08:47 | 579 |
+| enhanced-ide-development-workflow.md | 29/10/2025 08:47 | 10825 |
+| install-manifest.yaml | 29/10/2025 08:47 | 7260 |
+| user-guide.md | 29/10/2025 08:47 | 24301 |
 ...

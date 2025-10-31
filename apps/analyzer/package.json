@@ -9,7 +9,8 @@
   "dependencies": {
     "@packages/config": "*",
     "@packages/db": "*",
-    "@packages/types": "*"
+    "@packages/types": "*",
+    "axios": "^1.6.0"
   },
   "type": "module"
 }

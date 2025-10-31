@@ -18,10 +18,11 @@ export const config = {
   reportingInterval: process.env.REPORTING_INTERVAL as string,
   databasePath: process.env.DATABASE_PATH as string,
   narrativeHistoryWindow: parseInt(process.env.NARRATIVE_HISTORY_WINDOW || '7', 10),
+  perplexityApiKey: process.env.PERPLEXITY_API_KEY as string,
 };
 
 // Validate essential configuration
-for (const key of ['telegramBotToken', 'privateGroupId', 'publicChannelId', 'databasePath']) {
+for (const key of ['telegramBotToken', 'privateGroupId', 'publicChannelId', 'databasePath', 'perplexityApiKey']) {
   if (!config[key as keyof typeof config]) {
     console.error(`Error: Missing critical configuration for ${key}`);
     process.exit(1);

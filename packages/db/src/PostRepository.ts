@@ -1,5 +1,5 @@
-import db from './index';
-import { Post } from '@packages/types';
+import db from './index.js';
+import { Post } from '../../types/src/index.js';
 
 class PostRepository {
   public addPost(post: Post): void {

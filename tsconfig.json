@@ -24,7 +24,6 @@
     { "path": "./packages/db" },
     { "path": "./packages/types" },
     { "path": "./apps/bot" },
-    { "path": "./apps/collector" },
-    { "path": "./apps/analyzer" }
+    { "path": "./apps/collector" }
   ]
 }

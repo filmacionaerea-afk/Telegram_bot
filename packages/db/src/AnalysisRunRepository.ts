@@ -1,4 +1,4 @@
-import db from './index';
+import db from './index.js';
 
 class AnalysisRunRepository {
   public getLastAnalysisRun(): string {

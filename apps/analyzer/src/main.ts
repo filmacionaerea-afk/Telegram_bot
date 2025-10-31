@@ -1,7 +1,7 @@
-import { config } from '@packages/config';
+import { config } from '../../../packages/config/src/index.js';
 import { getNarrativeAndSentiment, saveNarrativeAndSentiment } from './analysis.js';
-import { postRepository } from '@packages/db/src/PostRepository';
-import { analysisRunRepository } from '@packages/db/src/AnalysisRunRepository';
+import { postRepository } from '../../../packages/db/src/PostRepository.js';
+import { analysisRunRepository } from '../../../packages/db/src/AnalysisRunRepository.js';
 
 async function main() {
   console.log('Analyzer service running...');

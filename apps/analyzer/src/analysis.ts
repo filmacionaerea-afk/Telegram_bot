@@ -1,20 +1,41 @@
-import db from '@packages/db';
+import axios from 'axios';
+import { config } from '../../../packages/config/src/index.js';
+import db from '../../../packages/db/src/index.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Mock function to simulate calling an external analysis API
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const narrativePromptTemplate = fs.readFileSync(path.resolve(__dirname, '../narrative_prompt.txt'), 'utf-8');
+const sentimentPromptTemplate = fs.readFileSync(path.resolve(__dirname, '../sentiment_prompt.txt'), 'utf-8');
+
 async function callAnalysisApi(prompt: string): Promise<string> {
-  if (prompt.includes('narrative')) {
-    return 'The main narrative of the day is about the rise of AI-powered developer tools.';
-  } else if (prompt.includes('sentiment')) {
-    return 'Bullish';
-  }
-  return '';
+  const response = await axios.post(
+    'https://api.perplexity.ai/chat/completions',
+    {
+      model: 'sonar-large-chat',
+      messages: [
+        { role: 'system', content: 'You are an AI assistant that analyzes crypto narratives.' },
+        { role: 'user', content: prompt },
+      ],
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${config.perplexityApiKey}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  return response.data.choices[0].message.content;
 }
 
 export async function getNarrativeAndSentiment(posts: any[]): Promise<{ narrative: string; sentiment: string }> {
-  const narrativePrompt = `Based on the following social media posts, what is the main narrative of the day?\n\n---\n\n${posts.map(p => p.content).join('\n')}`;
+  const narrativePrompt = narrativePromptTemplate.replace('{posts}', posts.map(p => p.content).join('\n'));
   const narrative = await callAnalysisApi(narrativePrompt);
 
-  const sentimentPrompt = `Based on the following narrative, what is the overall market sentiment? (Bullish, Bearish, or Neutral)\n\n---\n\n${narrative}`;
+  const sentimentPrompt = sentimentPromptTemplate.replace('{narrative}', narrative);
   const sentiment = await callAnalysisApi(sentimentPrompt);
 
   return { narrative, sentiment };

@@ -1,5 +1,5 @@
-import db from './index';
-import { schema } from './schema';
+import db from './index.js';
+import { schema } from './schema.js';
 
 function initDb() {
   try {

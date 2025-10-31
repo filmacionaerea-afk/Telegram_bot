@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:init": "ts-node packages/db/src/init-db.ts",
+    "db:init": "node --loader ts-node/esm packages/db/src/init-db.ts",
     "bot:start": "ts-node apps/bot/src/main.ts",
     "build": "tsc --build --force",
     "db:seed": "node --loader ts-node/esm packages/db/src/seed-influencers.ts",
