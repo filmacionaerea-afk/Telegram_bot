@@ -11,7 +11,7 @@
     "build": "tsc --build --force",
     "db:seed": "node --loader ts-node/esm packages/db/src/seed-influencers.ts",
     "collector:start": "node dist/apps/collector/src/main.js",
-    "analyzer:start": "ts-node --moduleResolution NodeNext apps/analyzer/src/main.ts"
+    "analyzer:start": "node --loader ts-node/esm apps/analyzer/src/main.ts"
   },
   "keywords": [],
   "author": "",

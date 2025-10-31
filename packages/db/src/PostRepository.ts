@@ -9,6 +9,11 @@ class PostRepository {
     insert.run(post.influencer_id, post.post_url, post.content, post.views, post.comments, post.interactions, post.timestamp);
   }
 
+  public getNewPosts(since: string): Post[] {
+    const stmt = db.prepare('SELECT * FROM Posts WHERE timestamp > ?');
+    return stmt.all(since) as Post[];
+  }
+
   public addPosts(posts: Post[]): void {
     const insertMany = db.transaction((postsArray: Post[]) => {
       for (const post of postsArray) {
