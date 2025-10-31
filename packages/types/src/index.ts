@@ -6,7 +6,7 @@ export interface Influencer {
 }
 
 export interface Post {
-  id: number;
+  id?: number;
   influencer_id: number;
   post_url: string;
   content: string;

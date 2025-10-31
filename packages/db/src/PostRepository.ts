@@ -1,4 +1,4 @@
-import db from './index.js';
+import db from './index';
 import { Post } from '@packages/types';
 
 class PostRepository {

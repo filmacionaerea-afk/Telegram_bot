@@ -1,0 +1,15 @@
+{
+  "name": "@apps/analyzer",
+  "version": "1.0.0",
+  "description": "Service for analyzing crypto narratives.",
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  },
+  "dependencies": {
+    "@packages/config": "*",
+    "@packages/db": "*",
+    "@packages/types": "*"
+  },
+  "type": "module"
+}

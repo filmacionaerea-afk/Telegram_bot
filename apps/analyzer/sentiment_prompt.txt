@@ -1,0 +1,5 @@
+Based on the following narrative, what is the overall market sentiment? (Bullish, Bearish, or Neutral)
+
+---
+
+{narrative}

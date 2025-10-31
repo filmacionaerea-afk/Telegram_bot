@@ -1,0 +1,5 @@
+Based on the following social media posts, what is the main narrative of the day?
+
+---
+
+{posts}

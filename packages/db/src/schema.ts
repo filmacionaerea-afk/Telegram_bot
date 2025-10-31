@@ -37,4 +37,10 @@ CREATE TABLE NarrativeProbabilities (
     supporting_posts_ids TEXT,
     FOREIGN KEY (narrative_id) REFERENCES DailyNarratives (id)
 );
+
+-- Tabla: AnalysisRuns
+CREATE TABLE AnalysisRuns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_timestamp DATETIME NOT NULL
+);
 `;
