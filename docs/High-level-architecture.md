@@ -35,8 +35,7 @@ La arquitectura está diseñada como un sistema de **microservicios desacoplados
 ```mermaid
 graph TD
     subgraph "Fuentes Externas"
-        X[X (Twitter)]
-        R[Reddit]
+        Perplexity[Perplexity API]
     end
 
     subgraph "Nuestra Infraestructura en la Nube (VPS)"
@@ -63,8 +62,7 @@ graph TD
         TG_PRIV[Grupo Privado de Telegram]
     end
 
-    X --> CAPI;
-    R --> CAPI;
+    Perplexity --> CAPI;
     CAPI --> DB;
 
     DB --> AAPI;
@@ -129,6 +127,11 @@ pino
 ^8.x
 Librería de logging
 Alto rendimiento y formato JSON estructurado.
+Data Collection API
+Perplexity API
+N/A
+Recolección de datos de fuentes externas (X, Reddit)
+Simplifica la integración con múltiples plataformas y la extracción de datos relevantes.
 
 Data Models
 Influencers
@@ -191,11 +194,12 @@ interface NarrativeProbability {
 API Specification
 No se desarrollará una API externa (REST/GraphQL) en el MVP. La comunicación entre los servicios internos se realizará a través de la base de datos. Las "APIs internas" son abstracciones lógicas que se implementarán como módulos dentro de los servicios correspondientes.
 Components
-Collector Service: Responsable de ejecutar el cron job que invoca a la API de datos, procesa las respuestas y almacena los datos brutos en la tabla Posts.
+Collector Service: Responsable de ejecutar el cron job que invoca a la API de Perplexity para la recolección de datos, procesa las respuestas y almacena los datos brutos en la tabla Posts.
 Analyzer Service: Responsable de ejecutar el cron job que lee los nuevos Posts, los envía a la API de análisis y almacena los resultados en las tablas DailyNarratives y NarrativeProbabilities.
 Bot Service: Responsable de ejecutar el cron job que lee los resultados del análisis de la base de datos, formatea los mensajes y los envía a los canales de Telegram.
 External APIs
 Telegram Bot API: Se utilizará a través del SDK Telegraf.js para enviar mensajes. La autenticación se gestionará mediante un Bot Token proporcionado por Telegram (BotFather).
+Perplexity API: Se utilizará para la recolección de datos de fuentes externas como X (Twitter) y Reddit. La autenticación se gestionará mediante una clave de API proporcionada por Perplexity y almacenada en las variables de entorno.
 Core Workflows
 Flujo de Datos End-to-End
 Fragmento de código
