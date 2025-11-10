@@ -1,4 +1,4 @@
-Based on the following narrative, what is the overall market sentiment? (Bullish, Bearish, or Neutral)
+Based on the following narrative, what is the overall market sentiment? Respond with only one word: Bullish, Bearish, or Neutral.
 
 ---
 

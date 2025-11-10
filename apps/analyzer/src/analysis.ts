@@ -15,7 +15,7 @@ async function callAnalysisApi(prompt: string): Promise<string> {
   const response = await axios.post(
     'https://api.perplexity.ai/chat/completions',
     {
-      model: 'sonar-large-chat',
+      model: 'sonar-pro',
       messages: [
         { role: 'system', content: 'You are an AI assistant that analyzes crypto narratives.' },
         { role: 'user', content: prompt },
