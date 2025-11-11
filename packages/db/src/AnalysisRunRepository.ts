@@ -1,16 +1,26 @@
-import db from './index.js';
+import { db } from './connection';
 
-class AnalysisRunRepository {
-  public getLastAnalysisRun(): string {
-    const stmt = db.prepare('SELECT run_timestamp FROM AnalysisRuns ORDER BY run_timestamp DESC LIMIT 1;');
-    const result = stmt.get() as { run_timestamp: string } | undefined;
-    return result ? result.run_timestamp : '1970-01-01T00:00:00Z';
-  }
+const TABLE_NAME = 'AnalysisRuns';
 
-  public addAnalysisRun(timestamp: string): void {
-    const stmt = db.prepare('INSERT INTO AnalysisRuns (run_timestamp) VALUES (?);');
-    stmt.run(timestamp);
-  }
+function getLastAnalysisRun(): string {
+  const stmt = db.prepare(`
+    CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      run_timestamp TEXT NOT NULL
+    );
+  `);
+  stmt.run();
+
+  const row = db.prepare(`SELECT run_timestamp FROM ${TABLE_NAME} ORDER BY id DESC LIMIT 1`).get() as { run_timestamp: string } | undefined;
+  return row ? row.run_timestamp : new Date(0).toISOString();
 }
 
-export const analysisRunRepository = new AnalysisRunRepository();
+function addAnalysisRun(timestamp: string): void {
+  const stmt = db.prepare(`INSERT INTO ${TABLE_NAME} (run_timestamp) VALUES (?)`);
+  stmt.run(timestamp);
+}
+
+export const analysisRunRepository = {
+  getLastAnalysisRun,
+  addAnalysisRun,
+};

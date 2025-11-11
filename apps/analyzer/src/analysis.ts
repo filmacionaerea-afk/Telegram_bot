@@ -1,12 +1,8 @@
 import axios from 'axios';
-import { config } from '../../../packages/config/src/index.js';
-import db from '../../../packages/db/src/index.js';
+import { config } from '../../../packages/config/src/index';
+import { db } from '../../../packages/db/src/index';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const narrativePromptTemplate = fs.readFileSync(path.resolve(__dirname, '../narrative_prompt.txt'), 'utf-8');
 const sentimentPromptTemplate = fs.readFileSync(path.resolve(__dirname, '../sentiment_prompt.txt'), 'utf-8');

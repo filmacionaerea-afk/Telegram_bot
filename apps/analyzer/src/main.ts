@@ -1,4 +1,4 @@
-import { config } from '../../../packages/config/src/index.js';
+import { config } from '@packages/config';
 import { getNarrativeAndSentiment, saveNarrativeAndSentiment } from './analysis.js';
 import { postRepository } from '../../../packages/db/src/PostRepository.js';
 import { analysisRunRepository } from '../../../packages/db/src/AnalysisRunRepository.js';
@@ -26,4 +26,3 @@ async function main() {
 }
 
 main();
-

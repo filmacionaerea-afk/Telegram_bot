@@ -7,9 +7,11 @@
   "dependencies": {
     "@packages/config": "*",
     "@packages/db": "*",
-    "@packages/types": "*"
+    "@packages/types": "*",
+    "node-cron": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "@types/node-cron": "^3.0.0"
   }
 }

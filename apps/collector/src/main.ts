@@ -1,80 +1,72 @@
-console.log('Before config import');
-import config from '@packages/config';
-console.log('After config import, before db import');
-import db from '@packages/db';
-import db, { postRepository } from '@packages/db'; // Import postRepository
-console.log('After db import, before types import');
-import { Influencer, Post } from '@packages/types'; // Import interfaces
-console.log('After types import');
+import { config } from '@packages/config';
+import { db, postRepository } from '@packages/db';
+import { Influencer, Post } from '@packages/types';
+import { perplexityClient } from './services/perplexity';
+import cron from 'node-cron';
 
 console.log('Collector service started.');
-console.log('Database path:', config.database.path);
+console.log('Database path:', config.databasePath);
 
-// Simulate an internal data API call
-async function fetchPostsFromDataAPI(influencer: Influencer): Promise<Post[]> {
-  console.log(`Simulating fetching posts for ${influencer.profile_name}...`);
-  const mockPosts: Post[] = [
-    {
-      id: Date.now() + 1,
-      influencer_id: influencer.id,
-      post_url: `https://twitter.com/${influencer.profile_name}/status/${Date.now() + 1}`,
-      content: `Mock post 1 from ${influencer.profile_name} about crypto.`,
-      views: Math.floor(Math.random() * 1000),
-      comments: Math.floor(Math.random() * 100),
-      interactions: Math.floor(Math.random() * 500),
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: Date.now() + 2,
-      influencer_id: influencer.id,
-      post_url: `https://twitter.com/${influencer.profile_name}/status/${Date.now() + 2}`,
-      content: `Mock post 2 from ${influencer.profile_name} discussing blockchain.`,
-      views: Math.floor(Math.random() * 1000),
-      comments: Math.floor(Math.random() * 100),
-      interactions: Math.floor(Math.random() * 500),
-      timestamp: new Date().toISOString(),
-    },
-  ];
-  return new Promise(resolve => setTimeout(() => resolve(mockPosts), 1000));
-}
-
-async function fetchPostsForInfluencer(influencerId: number): Promise<Post[]> {
-  console.log('Before db.prepare in fetchPostsForInfluencer');
-  const getInfluencer = db.prepare('SELECT * FROM Influencers WHERE id = ?');
-  console.log('After db.prepare in fetchPostsForInfluencer');
-  const influencer: Influencer | undefined = getInfluencer.get(influencerId) as Influencer;
-
-  if (!influencer) {
-    console.warn(`Influencer with ID ${influencerId} not found.`);
+// Maps the assumed Perplexity API response to our internal Post format
+function mapPerplexityResponseToPosts(perplexityData: any, influencer: Influencer): Post[] {
+  if (!perplexityData || !Array.isArray(perplexityData.results)) {
+    console.warn('Perplexity API response is not in the expected format or has no results.');
     return [];
   }
+
+  return perplexityData.results.map((item: any, index: number) => {
+    // Basic validation for essential fields
+    if (!item.url || !item.text) {
+      console.warn('Skipping an item from Perplexity due to missing URL or text.');
+      return null;
+    }
+
+    return {
+      id: Date.now() + index, // Temporary ID generation
+      influencer_id: influencer.id,
+      post_url: item.url,
+      content: item.text,
+      // Safely access metadata, providing default values
+      views: item.metadata?.views ?? 0,
+      comments: item.metadata?.replies ?? 0,
+      interactions: item.metadata?.likes ?? 0,
+      timestamp: new Date().toISOString(), // Perplexity API doesn't provide this, so we use current time
+    };
+  }).filter((post: Post | null): post is Post => post !== null); // Filter out any null entries
+}
+
+async function fetchPostsForInfluencer(influencer: Influencer): Promise<Post[]> {
+  console.log(`Fetching posts for ${influencer.profile_name}...`);
 
   try {
-    const posts = await fetchPostsFromDataAPI(influencer);
-    console.log(`Fetched ${posts.length} posts for ${influencer.profile_name}.`);
+    const perplexityResponse = await perplexityClient.getLatestPosts(influencer.profile_name);
+    const posts = mapPerplexityResponseToPosts(perplexityResponse, influencer);
+    console.log(`Mapped ${posts.length} posts for ${influencer.profile_name}.`);
     return posts;
   } catch (error) {
-    console.error(`Error fetching posts for ${influencer.profile_name}:`, error);
+    console.error(`Error fetching or mapping posts for ${influencer.profile_name}:`, error);
     return [];
   }
 }
 
-async function startCollector() {
-  console.log('Collector is running, waiting for cron job to trigger...');
+async function runCollectionCycle() {
+  console.log(`[${new Date().toISOString()}] Starting new collection cycle...`);
 
-  // Example usage: Fetch posts for influencer with ID 1
-  const exampleInfluencerId = 1;
-  const posts = await fetchPostsForInfluencer(exampleInfluencerId);
-  console.log('Example fetched posts:', posts);
+  const influencers: Influencer[] = db.prepare('SELECT * FROM Influencers').all() as Influencer[];
+  console.log(`Found ${influencers.length} influencers to process.`);
 
-  // Save fetched posts to the database
-  if (posts.length > 0) {
-    postRepository.addPosts(posts);
-    console.log(`Saved ${posts.length} posts to the database.`);
+  for (const influencer of influencers) {
+    const posts = await fetchPostsForInfluencer(influencer);
+    if (posts.length > 0) {
+      postRepository.addPosts(posts);
+      console.log(`Saved ${posts.length} new posts for ${influencer.profile_name} to the database.`);
+    }
   }
+
+  console.log(`[${new Date().toISOString()}] Collection cycle finished.`);
 }
 
-startCollector().catch(error => {
-  console.error('Collector service failed to start:', error);
-  process.exit(1);
-});
+// Schedule the collector to run based on the interval in the .env file
+cron.schedule(config.dataFetchInterval, runCollectionCycle);
+
+console.log(`Collector service scheduled. Waiting for the first run at interval: ${config.dataFetchInterval}`);

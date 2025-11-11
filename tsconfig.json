@@ -1,29 +1,17 @@
 {
+  "extends": "./tsconfig.base.json",
   "ts-node": {
-    "esm": true
+    "esm": false // Changed to false to align with CommonJS module system
   },
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "lib": ["ES2022"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "NodeNext",
-    "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "@packages/*": ["packages/*/src"],
-      "@apps/*": ["apps/*"]
-    }
+    "noEmit": true // The root file only orchestrates, it doesn't emit JS
   },
   "references": [
     { "path": "./packages/config" },
     { "path": "./packages/db" },
     { "path": "./packages/types" },
     { "path": "./apps/bot" },
-    { "path": "./apps/collector" }
+    { "path": "./apps/collector" },
+    { "path": "./apps/analyzer" }
   ]
 }
