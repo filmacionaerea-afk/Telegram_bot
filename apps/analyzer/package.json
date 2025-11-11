@@ -10,7 +10,12 @@
     "@packages/config": "*",
     "@packages/db": "*",
     "@packages/types": "*",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-cron": "^3.0.0"
   },
   "type": "module"
 }

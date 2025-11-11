@@ -34,6 +34,15 @@ class PostRepository {
     });
     insertMany(posts);
   }
+
+  public getPostsByIds(ids: number[]): Post[] {
+    if (ids.length === 0) {
+      return [];
+    }
+    const placeholders = ids.map(() => '?').join(',');
+    const stmt = db.prepare(`SELECT * FROM Posts WHERE id IN (${placeholders})`);
+    return stmt.all(...ids) as Post[];
+  }
 }
 
 export const postRepository = new PostRepository();

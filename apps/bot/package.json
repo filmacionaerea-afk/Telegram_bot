@@ -6,7 +6,14 @@
   "license": "ISC",
   "dependencies": {
     "telegraf": "^4.0.0",
-    "@packages/config": "*"
+    "@packages/config": "*",
+    "@packages/db": "*",
+    "@packages/types": "*",
+    "node-cron": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-cron": "^3.0.0"
   },
   "scripts": {
     "start": "ts-node src/main.ts"

@@ -1,0 +1,30 @@
+You are an expert crypto market analyst. Given a list of recent daily narratives and their sentiments, and a new daily narrative, calculate a probability score (between 0.0 and 1.0) that this new narrative will gain significant traction in the market.
+
+Consider the following factors:
+- The sentiment of the new narrative.
+- The frequency of similar narratives in the historical data.
+- The overall market sentiment trends.
+
+Also, based on the historical data and the new narrative, identify 5 additional probable emerging narratives that might be developing. For each emerging narrative, provide a brief summary.
+
+Format your response as a JSON object with the following structure:
+{
+  "probability_score": 0.75,
+  "emerging_narratives": [
+    {
+      "summary": "Summary of emerging narrative 1",
+      "sentiment": "Bullish" | "Bearish" | "Neutral"
+    },
+    {
+      "summary": "Summary of emerging narrative 2",
+      "sentiment": "Bullish" | "Bearish" | "Neutral"
+    },
+    // ... up to 5 emerging narratives
+  ]
+}
+
+Historical Narratives:
+{historical_narratives}
+
+New Daily Narrative:
+{new_daily_narrative}
