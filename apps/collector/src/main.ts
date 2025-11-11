@@ -1,5 +1,5 @@
 import { config } from '@packages/config';
-import { db, postRepository } from '@packages/db';
+import { postRepository, influencerRepository } from '@packages/db';
 import { Influencer, Post } from '@packages/types';
 import { perplexityClient } from './services/perplexity';
 import cron from 'node-cron';
@@ -52,7 +52,7 @@ async function fetchPostsForInfluencer(influencer: Influencer): Promise<Post[]> 
 async function runCollectionCycle() {
   console.log(`[${new Date().toISOString()}] Starting new collection cycle...`);
 
-  const influencers: Influencer[] = db.prepare('SELECT * FROM Influencers').all() as Influencer[];
+  const influencers: Influencer[] = influencerRepository.getAllInfluencers();
   console.log(`Found ${influencers.length} influencers to process.`);
 
   for (const influencer of influencers) {

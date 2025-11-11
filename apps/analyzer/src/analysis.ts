@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { config } from '../../../packages/config/src/index';
-import { db } from '../../../packages/db/src/index';
 import fs from 'fs';
 import path from 'path';
 
@@ -35,10 +34,4 @@ export async function getNarrativeAndSentiment(posts: any[]): Promise<{ narrativ
   const sentiment = await callAnalysisApi(sentimentPrompt);
 
   return { narrative, sentiment };
-}
-
-export function saveNarrativeAndSentiment(narrative: string, sentiment: string): void {
-  const date = new Date().toISOString().split('T')[0];
-  const stmt = db.prepare('INSERT INTO DailyNarratives (date, narrative_summary, sentiment) VALUES (?, ?, ?);');
-  stmt.run(date, narrative, sentiment);
 }

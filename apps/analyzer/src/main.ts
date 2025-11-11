@@ -1,7 +1,6 @@
 import { config } from '@packages/config';
-import { getNarrativeAndSentiment, saveNarrativeAndSentiment } from './analysis.js';
-import { postRepository } from '../../../packages/db/src/PostRepository.js';
-import { analysisRunRepository } from '../../../packages/db/src/AnalysisRunRepository.js';
+import { postRepository, analysisRunRepository, narrativeRepository } from '@packages/db';
+import { getNarrativeAndSentiment } from './analysis';
 
 async function main() {
   console.log('Analyzer service running...');
@@ -16,7 +15,7 @@ async function main() {
     const { narrative, sentiment } = await getNarrativeAndSentiment(newPosts);
     console.log('Narrative:', narrative);
     console.log('Sentiment:', sentiment);
-    saveNarrativeAndSentiment(narrative, sentiment);
+    narrativeRepository.saveDailyNarrative(new Date().toISOString().split('T')[0], narrative, sentiment);
     console.log('Saved narrative and sentiment to the database.');
   }
 
