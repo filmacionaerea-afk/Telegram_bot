@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const telegraf_1 = require("telegraf");
 const config_1 = require("@packages/config");
-const src_1 = require("@packages/db/src/");
+const src_1 = require("@packages/db/src");
 const telegramFormatter_1 = require("./services/telegramFormatter");
 const node_cron_1 = __importDefault(require("node-cron"));
 const bot = new telegraf_1.Telegraf(config_1.config.telegramBotToken);

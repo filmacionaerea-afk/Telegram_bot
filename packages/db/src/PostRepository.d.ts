@@ -7,3 +7,4 @@ declare class PostRepository {
 }
 export declare const postRepository: PostRepository;
 export {};
+//# sourceMappingURL=PostRepository.d.ts.map

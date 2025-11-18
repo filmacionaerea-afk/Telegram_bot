@@ -4,3 +4,4 @@ declare class InfluencerRepository {
 }
 export declare const influencerRepository: InfluencerRepository;
 export {};
+//# sourceMappingURL=InfluencerRepository.d.ts.map

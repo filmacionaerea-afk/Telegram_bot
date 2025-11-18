@@ -1,0 +1,1 @@
+{"version":3,"file":"telegramFormatter.d.ts","sourceRoot":"","sources":["telegramFormatter.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,oBAAoB,EAAE,IAAI,EAAE,MAAM,iBAAiB,CAAC;AAE7E,wBAAgB,mBAAmB,CACjC,SAAS,EAAE,cAAc,EACzB,WAAW,EAAE,oBAAoB,EACjC,eAAe,EAAE,IAAI,EAAE,GACtB,MAAM,CAmBR;AAED,wBAAgB,mBAAmB,CACjC,SAAS,EAAE,cAAc,EACzB,WAAW,EAAE,oBAAoB,GAChC,MAAM,CAQR"}

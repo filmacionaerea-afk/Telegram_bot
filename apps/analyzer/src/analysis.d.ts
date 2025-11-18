@@ -12,3 +12,4 @@ export declare function getProbabilityAndEmergingNarratives(newNarrative: string
         sentiment: 'Bullish' | 'Bearish' | 'Neutral';
     }[];
 }>;
+//# sourceMappingURL=analysis.d.ts.map

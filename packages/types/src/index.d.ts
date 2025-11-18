@@ -27,3 +27,4 @@ export interface NarrativeProbability {
     calculation_date: string;
     supporting_posts_ids: string;
 }
+//# sourceMappingURL=index.d.ts.map

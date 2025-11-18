@@ -10,3 +10,4 @@ declare class NarrativeRepository {
 }
 export declare const narrativeRepository: NarrativeRepository;
 export {};
+//# sourceMappingURL=NarrativeRepository.d.ts.map

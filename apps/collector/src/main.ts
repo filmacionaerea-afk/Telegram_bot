@@ -1,7 +1,7 @@
 import { config } from '@packages/config';
 import { postRepository, influencerRepository } from '@packages/db';
 import { Influencer, Post } from '@packages/types';
-import { perplexityClient } from './services/perplexity';
+import { perplexityClient } from './services/perplexity.js';
 import cron from 'node-cron';
 
 console.log('Collector service started.');

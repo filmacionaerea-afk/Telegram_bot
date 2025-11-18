@@ -1,6 +1,11 @@
 import Database from 'better-sqlite3';
 import path from 'path';
-import { config } from '../../config/src/index';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { config } from '../../config/src/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const dbPath = path.resolve(__dirname, '../../../', config.databasePath || './db/database.sqlite');
 const db = new Database(dbPath);

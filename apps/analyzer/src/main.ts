@@ -1,7 +1,7 @@
 import { config } from '@packages/config';
 import { postRepository, analysisRunRepository, narrativeRepository } from '@packages/db';
-import { getNarrativeAndSentiment, getProbabilityAndEmergingNarratives } from './analysis';
-import { DailyNarrative } from '@packages/types';
+import { getNarrativeAndSentiment, getProbabilityAndEmergingNarratives } from './analysis.js';
+import { DailyNarrative, Post } from '@packages/types';
 import cron from 'node-cron';
 
 async function runAnalysisCycle() {
@@ -30,7 +30,7 @@ async function runAnalysisCycle() {
     console.log('Probability Score:', probability_score);
     console.log('Emerging Narratives:', emerging_narratives.length);
 
-    narrativeRepository.saveNarrativeProbability(dailyNarrativeId, probability_score, newPosts.map(p => p.id).join(','));
+    narrativeRepository.saveNarrativeProbability(dailyNarrativeId, probability_score, newPosts.map((p: Post) => p.id).join(','));
     console.log('Saved probability for daily narrative.');
 
     for (const emergingNarrative of emerging_narratives) {

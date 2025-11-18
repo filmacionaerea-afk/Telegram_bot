@@ -1,18 +1,15 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
+    "module": "NodeNext",
     "lib": ["ES2022"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "NodeNext",
     "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@packages/*": ["packages/*/src"],
-      "@apps/*": ["apps/*"]
-    }
+    "declaration": true,
+    "declarationMap": true
   }
 }
