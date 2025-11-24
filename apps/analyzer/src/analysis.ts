@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { config } from '../../../packages/config/src/index.js';
+import { config } from '@packages/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

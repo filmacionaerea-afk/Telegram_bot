@@ -1,10 +1,10 @@
 import Database from 'better-sqlite3';
-import { config } from '../../config/src/index.js';
+import { config } from '@packages/config';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { Post } from '../../types/src/index.js';
+import { Post } from '@packages/types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

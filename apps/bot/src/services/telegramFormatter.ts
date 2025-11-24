@@ -1,4 +1,4 @@
-import { DailyNarrative, NarrativeProbability, Post } from '@packages/types';
+import type { DailyNarrative, NarrativeProbability, Post } from '@packages/types';
 
 export function formatPrivateReport(
   narrative: DailyNarrative,
@@ -9,7 +9,7 @@ export function formatPrivateReport(
 
   report += `*Narrative:* ${narrative.narrative_summary}\n`;
   report += `*Sentiment:* ${narrative.sentiment}\n`;
-  report += `*Probability Score:* ${ (probability.probability_score * 100).toFixed(2)}%\n\n`;
+  report += `*Probability Score:* ${(probability.probability_score * 100).toFixed(2)}%\n\n`;
 
   if (supportingPosts.length > 0) {
     report += `*Supporting Posts:*\n`;
@@ -32,7 +32,7 @@ export function formatPublicSummary(
   let summary = `*📢 Crypto Narrative Update 📢*\n\n`;
   summary += `*Narrative:* ${narrative.narrative_summary}\n`;
   summary += `*Sentiment:* ${narrative.sentiment}\n`;
-  summary += `*Probability:* ${ (probability.probability_score * 100).toFixed(2)}%\n`;
+  summary += `*Probability:* ${(probability.probability_score * 100).toFixed(2)}%\n`;
   summary += `\n_Stay tuned for more detailed insights!_`;
 
   return summary;
