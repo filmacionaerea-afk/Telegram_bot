@@ -4,6 +4,9 @@ import { narrativeRepository, postRepository } from '@packages/db';
 import type { DailyNarrative, NarrativeProbability, Post } from '@packages/types';
 import { formatPrivateReport, formatPublicSummary } from './services/telegramFormatter.js';
 import cron from 'node-cron';
+import { influencerRepository, analysisRunRepository } from '@packages/db';
+import Database from 'better-sqlite3';
+import path from 'path';
 
 try {
   console.log('--- DEBUG: Loading Config ---');
@@ -21,14 +24,14 @@ try {
   // Basic bot commands
   bot.start((ctx) => ctx.reply('¡Bienvenido al Bot de Narrativas Crypto! 🚀\n\nComandos disponibles:\n/reporte - Obtener reporte completo\n/resumen - Obtener resumen público\n/latest - Última narrativa\n/help - Ver ayuda'));
 
-  bot.help((ctx) => ctx.reply('Comandos disponibles:\n\n/reporte - Reporte detallado con narrativa, probabilidad y posts de soporte\n/resumen - Resumen público de la narrativa\n/latest - Última narrativa detectada\n/start - Ver mensaje de bienvenida'));
+  bot.help((ctx) => ctx.reply('Comandos disponibles:\n\n/reporte - Reporte detallado con narrativa, probabilidad y posts de soporte\n/resumen - Resumen público de la narrativa\n/latest - Última narrativa detectada\n/start - Ver mensaje de bienvenida\n\n*Admin:*\n/admin_collect - Ejecutar recolección\n/admin_analyze - Ejecutar análisis\n/admin_report - Enviar reportes\n/admin_full_cycle - Pipeline completo\n/admin_status - Estado del sistema', { parse_mode: 'Markdown' }));
 
   // Command to get full detailed report
   bot.command(['reporte', 'report'], async (ctx) => {
     try {
       const data = await fetchLatestNarrativeData();
       if (data) {
-        const privateReportMessage = formatPrivateReport(data.narrative, data.probability, data.supportingPosts);
+        const privateReportMessage = formatPrivateReport(data.narrative, data.probability, data.supportingPosts, data.emergingNarratives);
         await ctx.reply(privateReportMessage, { parse_mode: 'Markdown' });
       } else {
         await ctx.reply('No hay datos de narrativa disponibles en este momento.');
@@ -70,6 +73,101 @@ try {
     }
   });
 
+  // ============ ADMIN COMMANDS ============
+
+  // Admin: Ejecutar collector
+  bot.command('admin_collect', async (ctx) => {
+    await ctx.reply('🔄 Iniciando ciclo de recolección...');
+    try {
+      const { runCollectionCycle } = await import('../../collector/src/main.js');
+      await runCollectionCycle();
+      await ctx.reply('✅ Ciclo de recolección completado');
+    } catch (error: any) {
+      console.error('Error in admin_collect:', error);
+      await ctx.reply(`❌ Error: ${error.message}`);
+    }
+  });
+
+  // Admin: Ejecutar analyzer
+  bot.command('admin_analyze', async (ctx) => {
+    await ctx.reply('🔄 Iniciando ciclo de análisis...');
+    try {
+      const { runAnalysisCycle } = await import('../../analyzer/src/main.js');
+      await runAnalysisCycle();
+      await ctx.reply('✅ Ciclo de análisis completado');
+    } catch (error: any) {
+      console.error('Error in admin_analyze:', error);
+      await ctx.reply(`❌ Error: ${error.message}`);
+    }
+  });
+
+  // Admin: Enviar reportes
+  bot.command('admin_report', async (ctx) => {
+    await ctx.reply('🔄 Enviando reportes...');
+    try {
+      await sendReportsCycle();
+      await ctx.reply('✅ Reportes enviados');
+    } catch (error: any) {
+      console.error('Error in admin_report:', error);
+      await ctx.reply(`❌ Error: ${error.message}`);
+    }
+  });
+
+  // Admin: Pipeline completo
+  bot.command('admin_full_cycle', async (ctx) => {
+    await ctx.reply('🔄 Ejecutando pipeline completo...');
+    try {
+      await ctx.reply('1/3 Recolectando datos...');
+      const { runCollectionCycle } = await import('../../collector/src/main.js');
+      await runCollectionCycle();
+
+      await ctx.reply('2/3 Analizando narrativas...');
+      const { runAnalysisCycle } = await import('../../analyzer/src/main.js');
+      await runAnalysisCycle();
+
+      await ctx.reply('3/3 Enviando reportes...');
+      await sendReportsCycle();
+
+      await ctx.reply('✅ Pipeline completo ejecutado exitosamente');
+    } catch (error: any) {
+      console.error('Error in admin_full_cycle:', error);
+      await ctx.reply(`❌ Error: ${error.message}`);
+    }
+  });
+
+  bot.command('admin_status', async (ctx) => {
+    try {
+      const dbPath = path.resolve(process.cwd(), config.databasePath);
+      const db = new Database(dbPath);
+
+      const totalPosts = db.prepare('SELECT COUNT(*) as count FROM Posts').get() as { count: number };
+      const totalNarratives = db.prepare('SELECT COUNT(*) as count FROM DailyNarratives').get() as { count: number };
+      const totalInfluencers = influencerRepository.getAllInfluencers().length;
+
+      const latestNarrative = narrativeRepository.getLatestNarrativeWithProbability();
+      const lastAnalysisRun = analysisRunRepository.getLastAnalysisRun();
+
+      const message = `*📊 Estado del Sistema*
+
+*Base de Datos:*
+- Posts: ${totalPosts.count}
+- Narrativas: ${totalNarratives.count}
+- Influencers: ${totalInfluencers}
+
+*Última Narrativa:*
+${latestNarrative?.narrative.narrative_summary || 'Ninguna disponible'}
+
+*Última Ejecución:*
+- Análisis: ${lastAnalysisRun || 'Nunca'}`;
+
+      db.close();
+      await ctx.reply(message, { parse_mode: 'Markdown' });
+    } catch (error: any) {
+      console.error('Error in admin_status:', error);
+      await ctx.reply(`❌ Error: ${error.message}`);
+    }
+  });
+
   bot.on('sticker', (ctx) => ctx.reply('👍'));
   bot.hears('hi', (ctx) => ctx.reply('Hey there'));
 
@@ -77,6 +175,7 @@ try {
     narrative: DailyNarrative;
     probability: NarrativeProbability;
     supportingPosts: Post[];
+    emergingNarratives: { narrative: DailyNarrative, probability: NarrativeProbability | null }[];
   } | null> {
     const latestData = narrativeRepository.getLatestNarrativeWithProbability();
 
@@ -91,10 +190,14 @@ try {
       supportingPosts = postRepository.getPostsByIds(postIds);
     }
 
+    // Fetch emerging narratives
+    const emergingNarratives = narrativeRepository.getEmergingNarratives(5);
+
     return {
       narrative: latestData.narrative,
       probability: latestData.probability,
       supportingPosts: supportingPosts,
+      emergingNarratives: emergingNarratives,
     };
   }
 
@@ -108,7 +211,7 @@ try {
         console.log('Supporting Posts:', data.supportingPosts.length);
 
         // Send private report
-        const privateReportMessage = formatPrivateReport(data.narrative, data.probability, data.supportingPosts);
+        const privateReportMessage = formatPrivateReport(data.narrative, data.probability, data.supportingPosts, data.emergingNarratives);
         await bot.telegram.sendMessage(config.privateGroupId, privateReportMessage, { parse_mode: 'Markdown' });
         console.log('Private report sent.');
 

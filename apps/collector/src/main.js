@@ -1,14 +1,9 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("@packages/config");
-const db_1 = require("@packages/db");
-const perplexity_1 = require("./services/perplexity");
-const node_cron_1 = __importDefault(require("node-cron"));
+import { config } from '@packages/config';
+import { postRepository, influencerRepository } from '@packages/db';
+import { perplexityClient } from './services/perplexity.js';
+import cron from 'node-cron';
 console.log('Collector service started.');
-console.log('Database path:', config_1.config.databasePath);
+console.log('Database path:', config.databasePath);
 // Maps the assumed Perplexity API response to our internal Post format
 function mapPerplexityResponseToPosts(perplexityData, influencer) {
     if (!perplexityData || !Array.isArray(perplexityData.results)) {
@@ -37,7 +32,7 @@ function mapPerplexityResponseToPosts(perplexityData, influencer) {
 async function fetchPostsForInfluencer(influencer) {
     console.log(`Fetching posts for ${influencer.profile_name}...`);
     try {
-        const perplexityResponse = await perplexity_1.perplexityClient.getLatestPosts(influencer.profile_name);
+        const perplexityResponse = await perplexityClient.getLatestPosts(influencer.profile_name);
         const posts = mapPerplexityResponseToPosts(perplexityResponse, influencer);
         console.log(`Mapped ${posts.length} posts for ${influencer.profile_name}.`);
         return posts;
@@ -47,20 +42,20 @@ async function fetchPostsForInfluencer(influencer) {
         return [];
     }
 }
-async function runCollectionCycle() {
+export async function runCollectionCycle() {
     console.log(`[${new Date().toISOString()}] Starting new collection cycle...`);
-    const influencers = db_1.influencerRepository.getAllInfluencers();
+    const influencers = influencerRepository.getAllInfluencers();
     console.log(`Found ${influencers.length} influencers to process.`);
     for (const influencer of influencers) {
         const posts = await fetchPostsForInfluencer(influencer);
         if (posts.length > 0) {
-            db_1.postRepository.addPosts(posts);
+            postRepository.addPosts(posts);
             console.log(`Saved ${posts.length} new posts for ${influencer.profile_name} to the database.`);
         }
     }
     console.log(`[${new Date().toISOString()}] Collection cycle finished.`);
 }
 // Schedule the collector to run based on the interval in the .env file
-node_cron_1.default.schedule(config_1.config.dataFetchInterval, runCollectionCycle);
-console.log(`Collector service scheduled. Waiting for the first run at interval: ${config_1.config.dataFetchInterval}`);
+cron.schedule(config.dataFetchInterval, runCollectionCycle);
+console.log(`Collector service scheduled. Waiting for the first run at interval: ${config.dataFetchInterval}`);
 //# sourceMappingURL=main.js.map

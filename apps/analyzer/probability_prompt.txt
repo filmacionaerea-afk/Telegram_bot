@@ -5,7 +5,7 @@ Consider the following factors:
 - The frequency of similar narratives in the historical data.
 - The overall market sentiment trends.
 
-Also, based on the historical data and the new narrative, identify 5 additional probable emerging narratives that might be developing. For each emerging narrative, provide a brief summary.
+Also, based on the historical data and the new narrative, identify 5 additional probable emerging narratives that might be developing. For each emerging narrative, provide a brief summary, sentiment, and a probability score.
 
 Format your response as a JSON object with the following structure:
 {
@@ -13,11 +13,13 @@ Format your response as a JSON object with the following structure:
   "emerging_narratives": [
     {
       "summary": "Summary of emerging narrative 1",
-      "sentiment": "Bullish" | "Bearish" | "Neutral"
+      "sentiment": "Bullish" | "Bearish" | "Neutral",
+      "probability": 0.65
     },
     {
       "summary": "Summary of emerging narrative 2",
-      "sentiment": "Bullish" | "Bearish" | "Neutral"
+      "sentiment": "Bullish" | "Bearish" | "Neutral",
+      "probability": 0.55
     },
     // ... up to 5 emerging narratives
   ]

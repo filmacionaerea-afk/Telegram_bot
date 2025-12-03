@@ -45,7 +45,7 @@ export async function getNarrativeAndSentiment(posts: any[]): Promise<{ narrativ
 export async function getProbabilityAndEmergingNarratives(
   newNarrative: string,
   historicalNarratives: { summary: string; sentiment: string }[]
-): Promise<{ probability_score: number; emerging_narratives: { summary: string; sentiment: 'Bullish' | 'Bearish' | 'Neutral' }[] }> {
+): Promise<{ probability_score: number; emerging_narratives: { summary: string; sentiment: 'Bullish' | 'Bearish' | 'Neutral'; probability?: number }[] }> {
   const historicalNarrativesString = historicalNarratives.map(n => `- ${n.summary} (${n.sentiment})`).join('\n');
   const prompt = probabilityPromptTemplate
     .replace('{historical_narratives}', historicalNarrativesString)

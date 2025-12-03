@@ -49,7 +49,7 @@ async function fetchPostsForInfluencer(influencer: Influencer): Promise<Post[]> 
   }
 }
 
-async function runCollectionCycle() {
+export async function runCollectionCycle() {
   console.log(`[${new Date().toISOString()}] Starting new collection cycle...`);
 
   const influencers: Influencer[] = influencerRepository.getAllInfluencers();

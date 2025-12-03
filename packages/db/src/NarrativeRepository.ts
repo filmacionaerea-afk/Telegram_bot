@@ -51,6 +51,41 @@ class NarrativeRepository {
 
     return { narrative: latestNarrative, probability };
   }
+
+  public getEmergingNarratives(limit: number = 5): { narrative: DailyNarrative, probability: NarrativeProbability | null }[] {
+    // Get the latest main narrative to exclude it
+    const latestMain = this.getLatestNarrativeWithProbability();
+    const excludeId = latestMain?.narrative.id || 0;
+
+    // Get other recent narratives excluding the main one
+    const stmt = db.prepare(`
+      SELECT dn.id as narrative_id, dn.date, dn.narrative_summary, dn.sentiment,
+             np.id as prob_id, np.probability_score, np.calculation_date, np.supporting_posts_ids
+      FROM DailyNarratives dn
+      LEFT JOIN NarrativeProbabilities np ON dn.id = np.narrative_id
+      WHERE dn.id != ?
+      ORDER BY dn.date DESC, np.calculation_date DESC
+      LIMIT ?
+    `);
+
+    const results = stmt.all(excludeId, limit) as any[];
+
+    return results.map((row) => ({
+      narrative: {
+        id: row.narrative_id,
+        date: row.date,
+        narrative_summary: row.narrative_summary,
+        sentiment: row.sentiment,
+      },
+      probability: row.prob_id ? {
+        id: row.prob_id,
+        narrative_id: row.narrative_id,
+        probability_score: row.probability_score,
+        calculation_date: row.calculation_date,
+        supporting_posts_ids: row.supporting_posts_ids,
+      } : null,
+    }));
+  }
 }
 
 export const narrativeRepository = new NarrativeRepository();

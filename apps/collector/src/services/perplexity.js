@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.perplexityClient = void 0;
-const config_1 = require("@packages/config");
+import { config } from '@packages/config';
 async function getLatestPosts(profileName) {
     const url = 'https://api.perplexity.ai/v1/search';
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${config_1.config.perplexityApiKey}`
+            'Authorization': `Bearer ${config.perplexityApiKey}`
         },
         body: JSON.stringify({
             query: `latest posts from ${profileName} on twitter`,
@@ -28,7 +25,7 @@ async function getLatestPosts(profileName) {
         throw error;
     }
 }
-exports.perplexityClient = {
+export const perplexityClient = {
     getLatestPosts,
 };
 //# sourceMappingURL=perplexity.js.map

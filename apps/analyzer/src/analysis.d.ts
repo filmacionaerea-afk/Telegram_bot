@@ -10,6 +10,7 @@ export declare function getProbabilityAndEmergingNarratives(newNarrative: string
     emerging_narratives: {
         summary: string;
         sentiment: 'Bullish' | 'Bearish' | 'Neutral';
+        probability?: number;
     }[];
 }>;
 //# sourceMappingURL=analysis.d.ts.map

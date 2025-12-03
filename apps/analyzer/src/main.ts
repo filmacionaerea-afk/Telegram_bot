@@ -4,7 +4,7 @@ import { getNarrativeAndSentiment, getProbabilityAndEmergingNarratives } from '.
 import { DailyNarrative, Post } from '@packages/types';
 import cron from 'node-cron';
 
-async function runAnalysisCycle() {
+export async function runAnalysisCycle() {
   console.log(`[${new Date().toISOString()}] Starting new analysis cycle...`);
 
   const lastRun = analysisRunRepository.getLastAnalysisRun();
@@ -39,8 +39,9 @@ async function runAnalysisCycle() {
         emergingNarrative.summary,
         emergingNarrative.sentiment
       );
-      // Assuming emerging narratives also get a probability score, or we can set a default/placeholder
-      narrativeRepository.saveNarrativeProbability(emergingNarrativeId, 0, ''); // Placeholder probability and supporting posts
+      // Use the actual probability from the emerging narrative, or default to 0.5
+      const emergingProbability = emergingNarrative.probability || 0.5;
+      narrativeRepository.saveNarrativeProbability(emergingNarrativeId, emergingProbability, '');
     }
     console.log('Saved emerging narratives.');
   }
